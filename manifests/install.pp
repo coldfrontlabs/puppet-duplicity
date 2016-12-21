@@ -11,9 +11,21 @@
 # Copyright 2014 Martin Meinhold, unless otherwise noted.
 #
 class duplicity::install inherits duplicity {
-  package { 'duplicity':
-    ensure => $duplicity::duplicity_package_ensure,
-    name   => $duplicity::duplicity_package_name,
+  case $::operatingsystem {
+      'CentOS': {
+        package { 'duplicity':
+          ensure => $duplicity::duplicity_package_ensure,
+          name   => $duplicity::duplicity_package_name,
+          require => Yumrepo['epel'],
+        }
+      }
+    }
+    default: {
+      package { 'duplicity':
+        ensure => $duplicity::duplicity_package_ensure,
+        name   => $duplicity::duplicity_package_name,
+      }
+    }
   }
 
   if $duplicity::duply_package_provider == archive {
